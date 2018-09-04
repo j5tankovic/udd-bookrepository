@@ -1,0 +1,33 @@
+INSERT INTO category (id, name) VALUES (1, 'Art & Photography');
+INSERT INTO category (id, name) VALUES (2, 'Biography');
+INSERT INTO category (id, name) VALUES (3, 'Children\'s Books');
+INSERT INTO category (id, name) VALUES (4, 'Crafts & Hobbies');
+INSERT INTO category (id, name) VALUES (5, 'Crime & Thriller');
+INSERT INTO category (id, name) VALUES (6, 'Fiction');
+INSERT INTO category (id, name) VALUES (7, 'Food & Drink');
+INSERT INTO category (id, name) VALUES (8, 'Graphic Novels, Anime & Manga');
+INSERT INTO category (id, name) VALUES (9, 'History & Archaeology');
+INSERT INTO category (id, name) VALUES (10, 'Mind, Body & Spirit');
+INSERT INTO category (id, name) VALUES (11, 'Science Fiction, Fantasy & Horror');
+INSERT INTO category (id, name) VALUES (12, 'Audio Books');
+INSERT INTO category (id, name) VALUES (13, 'Business, Finance & Law');
+INSERT INTO category (id, name) VALUES (14, 'Computing');
+INSERT INTO category (id, name) VALUES (15, 'Dictionaries & Languages');
+INSERT INTO category (id, name) VALUES (16, 'Entertainment');
+INSERT INTO category (id, name) VALUES (17, 'Health');
+INSERT INTO category (id, name) VALUES (18, 'Home & Garden');
+INSERT INTO category (id, name) VALUES (19, 'Humour');
+INSERT INTO category (id, name) VALUES (20, 'Medical');
+INSERT INTO category (id, name) VALUES (21, 'Natural History');
+INSERT INTO category (id, name) VALUES (22, 'Personal Development');
+INSERT INTO category (id, name) VALUES (23, 'Poetry & Drama');
+INSERT INTO category (id, name) VALUES (24, 'Reference');
+
+INSERT INTO user (id, firstname, lastname, password, type, username) VALUES (1, 'Admin', 'Admin', 'admin', 'ADMIN', 'admin');
+INSERT INTO user (id, firstname, lastname, password, type, username, subscribed_category_id) VALUES (2, 'John', 'Doe', 'john', 'SUBSCRIBER', 'john', 1);
+
+INSERT INTO language (id, name) VALUES (1, 'English');
+INSERT INTO language (id, name) VALUES (2, 'Serbian');
+INSERT INTO language (id, name) VALUES (3, 'Italian');
+INSERT INTO language (id, name) VALUES (4, 'French');
+INSERT INTO language (id, name) VALUES (5, 'Chinese');
