@@ -28,7 +28,8 @@ public class EBookRepositoryApplication {
     CommandLineRunner init(EBookService eBookService) {
         return (args) -> {
             eBookService.init();
-            createIndex();
+            if (!elasticsearchTemplate.indexExists("erepository"))
+                createIndex();
         };
     }
 

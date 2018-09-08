@@ -1,14 +1,28 @@
 package com.bdzjn.udd.ebookrepository.service;
 
+import com.bdzjn.udd.ebookrepository.dto.EBookDTO;
+import com.bdzjn.udd.ebookrepository.dto.SearchDTO;
+import com.bdzjn.udd.ebookrepository.dto.SearchHitDTO;
 import com.bdzjn.udd.ebookrepository.informationRetrieval.indexing.handler.PdfDocumentHandler;
 import com.bdzjn.udd.ebookrepository.informationRetrieval.model.IREBook;
 import com.bdzjn.udd.ebookrepository.informationRetrieval.repository.IREBookRepository;
 import com.bdzjn.udd.ebookrepository.model.EBook;
 import com.bdzjn.udd.ebookrepository.repository.EBookRepository;
 import com.bdzjn.udd.ebookrepository.storage.StorageProperties;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.text.Text;
+import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,8 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class EBookService {
@@ -34,15 +47,19 @@ public class EBookService {
 
     private Path dirLocation;
 
+    private ElasticsearchTemplate elasticsearchTemplate;
+
     @Autowired
     public EBookService(StorageProperties properties,
                         IREBookRepository irEbookRepository,
                         EBookRepository eBookRepository,
-                        PdfDocumentHandler pdfDocumentHandler) {
+                        PdfDocumentHandler pdfDocumentHandler,
+                        ElasticsearchTemplate elasticsearchTemplate) {
         this.dirLocation = Paths.get(properties.getLocation());
         this.irEbookRepository = irEbookRepository;
         this.eBookRepository = eBookRepository;
         this.pdfDocumentHandler = pdfDocumentHandler;
+        this.elasticsearchTemplate = elasticsearchTemplate;
     }
 
     public void save(EBook ebook) {
@@ -70,8 +87,7 @@ public class EBookService {
     public void init() {
         try {
             Files.createDirectories(dirLocation);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -96,5 +112,51 @@ public class EBookService {
 
     public List<EBook> findAll() {
         return eBookRepository.findAll();
+    }
+
+    public List<SearchHitDTO> search(SearchDTO searchDTO) {
+        List<SearchHitDTO> result = new ArrayList<>();
+        SearchResponse response = elasticsearchTemplate.getClient().prepareSearch("erepository")
+                .setTypes("irebook")
+                .setQuery(formQuery(searchDTO))
+                .highlighter(new HighlightBuilder()
+                        .field("text")
+                        .numOfFragments(1)
+                        .fragmentSize(200)
+                        .preTags("<b><em>")
+                        .postTags("</em></b>")
+                )
+                .get();
+
+        Iterator<SearchHit> iterator = response.getHits().iterator();
+        Gson gson = new GsonBuilder().create();
+        while (iterator.hasNext()) {
+            SearchHit searchHit = iterator.next();
+            String searchSource = searchHit.getSourceAsString();
+            if (searchSource != null) {
+                SearchHitDTO searchHitDTO = gson.fromJson(searchSource, SearchHitDTO.class);
+                searchHit.getHighlightFields().values().forEach(field -> {
+                    searchHitDTO.setText(extractHighlightedText(field));
+                });
+                result.add(searchHitDTO);
+            }
+        }
+
+        return result;
+    }
+
+    private QueryStringQueryBuilder formQuery(SearchDTO searchDTO) {
+        return QueryBuilders
+                .queryStringQuery(searchDTO.getSearchValue().trim());
+    }
+
+    private String extractHighlightedText(HighlightField highlightField) {
+        StringBuilder result = new StringBuilder();
+        for (Text t : highlightField.getFragments()) {
+            result.append(t.string());
+            result.append("...");
+        }
+
+        return result.toString();
     }
 }

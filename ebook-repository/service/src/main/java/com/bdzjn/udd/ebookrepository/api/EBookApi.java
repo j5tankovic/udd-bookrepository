@@ -1,18 +1,17 @@
 package com.bdzjn.udd.ebookrepository.api;
 
 import com.bdzjn.udd.ebookrepository.dto.EBookDTO;
+import com.bdzjn.udd.ebookrepository.dto.SearchDTO;
+import com.bdzjn.udd.ebookrepository.dto.SearchHitDTO;
 import com.bdzjn.udd.ebookrepository.dto.mapper.EBookMapper;
 import com.bdzjn.udd.ebookrepository.model.EBook;
-import com.bdzjn.udd.ebookrepository.model.User;
 import com.bdzjn.udd.ebookrepository.service.EBookService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,7 +35,7 @@ public class EBookApi {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/upload")
+    @PostMapping("upload")
     public ResponseEntity uploadEBook(@RequestParam("file")MultipartFile multipartFile) {
         String originalFileName = multipartFile.getOriginalFilename();
 
@@ -54,6 +53,12 @@ public class EBookApi {
                 .map(eBookMapper::toEBookDTO)
                 .collect(Collectors.toList());
 
+        return new ResponseEntity<>(eBookDTOList, HttpStatus.OK);
+    }
+
+    @PostMapping("search")
+    public ResponseEntity search(@RequestBody SearchDTO searchDTO) {
+        List<SearchHitDTO> eBookDTOList = eBookService.search(searchDTO);
         return new ResponseEntity<>(eBookDTOList, HttpStatus.OK);
     }
 

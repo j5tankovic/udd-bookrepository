@@ -7,28 +7,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class Indexer {
 
-    private IREBookRepository IREBookRepository;
+    private IREBookRepository ireBookRepository;
 
-    public Indexer(IREBookRepository IREBookRepository) {
-        this.IREBookRepository = IREBookRepository;
+    public Indexer(IREBookRepository ireBookRepository) {
+        this.ireBookRepository = ireBookRepository;
     }
 
-    //TODO probably need to change this
     public IREBook add(IREBook ebook) {
-        return IREBookRepository.index(ebook);
+        return ireBookRepository.index(ebook);
     }
 
     public IREBook update(IREBook ebook) {
-        return IREBookRepository.save(ebook);
+        return ireBookRepository.save(ebook);
     }
 
     public void delete(IREBook ebook) {
-        if (IREBookRepository.equals(ebook)) {
-            IREBookRepository.delete(ebook);
-        }
-    }
-
-    public void index() {
-        //TODO implement
+        ireBookRepository.delete(ebook);
     }
 }
