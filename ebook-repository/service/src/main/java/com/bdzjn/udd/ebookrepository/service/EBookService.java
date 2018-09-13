@@ -22,6 +22,8 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -30,11 +32,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class EBookService {
@@ -146,17 +150,26 @@ public class EBookService {
     }
 
     private QueryStringQueryBuilder formQuery(SearchDTO searchDTO) {
-        return QueryBuilders
-                .queryStringQuery(searchDTO.getSearchValue().trim());
+        return QueryBuilders.queryStringQuery(searchDTO.getSearchValue().trim());
     }
 
     private String extractHighlightedText(HighlightField highlightField) {
-        StringBuilder result = new StringBuilder();
-        for (Text t : highlightField.getFragments()) {
-            result.append(t.string());
-            result.append("...");
+        return Arrays.stream(highlightField.getFragments())
+                .map(t -> t.string() + "...")
+                .collect(Collectors.joining());
+    }
+
+    public Optional<Resource> loadBookAsResource(String fileName) {
+        try {
+            Path filePath = this.dirLocation.resolve(fileName).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+            if(resource.exists()) {
+                return Optional.of(resource);
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
 
-        return result.toString();
+        return Optional.empty();
     }
 }

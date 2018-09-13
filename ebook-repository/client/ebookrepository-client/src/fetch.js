@@ -12,6 +12,11 @@ export const post = (url, data, config = {}) => {
     return axios.post(url, data, config);
 }
 
+export const put = (url, data, config = {}) => {
+    url = getFullUrl(url)
+    return axios.put(url, data, config);
+}
+
 export const postFile = (url, file, config = {}) => {
     Object.assign(config, {
         headers: {

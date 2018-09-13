@@ -1,5 +1,6 @@
 package com.bdzjn.udd.ebookrepository.dto;
 
+import com.bdzjn.udd.ebookrepository.model.Category;
 import com.bdzjn.udd.ebookrepository.model.UserType;
 
 public class UserDTO {
@@ -15,6 +16,8 @@ public class UserDTO {
     private String password;
 
     private UserType type;
+
+    private Category subscribedTo;
 
     public UserDTO() {
     }
@@ -74,5 +77,14 @@ public class UserDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Category getSubscribedTo() {
+        return subscribedTo;
+    }
+
+    public UserDTO setSubscribedTo(Category subscribedTo) {
+        this.subscribedTo = subscribedTo;
+        return this;
     }
 }

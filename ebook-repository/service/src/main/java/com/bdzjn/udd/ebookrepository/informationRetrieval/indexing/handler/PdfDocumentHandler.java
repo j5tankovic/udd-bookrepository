@@ -20,8 +20,8 @@ public class PdfDocumentHandler extends DocumentHandler {
         IREBook ireBook = new IREBook();
 
         ireBook.setFilename(eBook.getFilename());
-        ireBook.setLanguage(eBook.getLanguage());
-        ireBook.setCategory(eBook.getCategory());
+        ireBook.setLanguage(eBook.getLanguage().getName());
+        ireBook.setTitle(eBook.getTitle());
 
         File bookFile = filepath.toFile();
         ireBook.setText(getText(bookFile));
@@ -32,10 +32,6 @@ public class PdfDocumentHandler extends DocumentHandler {
 
         if (eBook.getKeywords() != null) {
             ireBook.setKeywords(eBook.getKeywords());
-        }
-
-        if (eBook.getPublicationYear() != 0) {
-            ireBook.setPublicationYear(eBook.getPublicationYear());
         }
 
         return ireBook;

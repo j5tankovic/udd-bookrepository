@@ -30,21 +30,41 @@
 </template>
 
 <script>
+
+const mode = {
+  CREATE: "CREATE",
+  EDIT: "EDIT"
+}
+
 export default {
   name: "UserForm",
+  props: ["userForForm"],
   data () {
     return {
-      user: {},
+     // user: {...this.userForForm},
     }
   },
   methods: {
     save() {
-      this.$emit('saveUser', this.user);
+      this.$emit('saveUser', { user: this.user, mode: this.mode});
       this.reset();
     },
 
     reset() {
+      this.$emit('cancel');
       this.user = {}
+    }
+  },
+  computed: {
+    mode() {
+      return Object.keys(this.user).length !== 0 ? mode.EDIT : mode.CREATE;
+    },
+    user: {
+      get() {
+        return {...this.userForForm};
+      },
+      set(newValue){
+      }
     }
   }
 }

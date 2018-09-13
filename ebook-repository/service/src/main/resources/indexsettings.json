@@ -1,0 +1,17 @@
+{
+  "analysis": {
+    "analyzer": {
+      "serbian-analyzer": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "sr_cyrillic_to_latin",
+          "sr_lowercase",
+          "sr_stopwords",
+          "sr_stemmer",
+          "asciifolding"
+        ]
+      }
+    }
+  }
+}

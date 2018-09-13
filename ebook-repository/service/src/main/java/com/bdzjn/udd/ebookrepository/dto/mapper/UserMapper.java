@@ -34,6 +34,10 @@ public class UserMapper {
         user.setFirstname(userDTO.getFirstname());
         user.setLastname(userDTO.getLastname());
         user.setType(userDTO.getType());
+        user.setId(userDTO.getId());
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(userDTO.getPassword());
+        user.setSubscribedCategory(userDTO.getSubscribedTo());
 
         return user;
     }

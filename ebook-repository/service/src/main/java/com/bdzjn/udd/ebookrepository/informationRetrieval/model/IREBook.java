@@ -10,33 +10,19 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Document(indexName = "erepository", createIndex = false)
 public class IREBook {
 
-    public static final String INDEX_NAME = "erepository";
-    public static final String TYPE_NAME = "ebook";
-
     @Id
     @Field(type = FieldType.Keyword, index = false, store = true)
     private String filename;
 
-//    @Field(type = FieldType.Text, store = true, analyzer = "serbian-analyzer")
     private String text;
 
-//    @Field(type = FieldType.Text, store = true)
     private String title;
 
-//    @Field(type = FieldType.Text, store = true, analyzer = "serbian-analyzer")
     private String keywords;
 
-//    @Field(type = FieldType.Text, store = true)
     private String author;
 
-//    @Field(type = FieldType.Integer, store = true)
-    private int publicationYear;
-
-//    @Field(type = FieldType.Object, store = true)
-    private Language language;
-
-//    @Field(type = FieldType.Object, store = true)
-    private Category category;
+    private String language;
 
     public String getFilename() {
         return filename;
@@ -78,30 +64,11 @@ public class IREBook {
         this.author = author;
     }
 
-    public int getPublicationYear() {
-        return publicationYear;
-    }
-
-    public IREBook setPublicationYear(int publicationYear) {
-        this.publicationYear = publicationYear;
-        return this;
-    }
-
-    public Language getLanguage() {
+    public String getLanguage() {
         return language;
     }
 
-    public IREBook setLanguage(Language language) {
+    public void setLanguage(String language) {
         this.language = language;
-        return this;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public IREBook setCategory(Category category) {
-        this.category = category;
-        return this;
     }
 }

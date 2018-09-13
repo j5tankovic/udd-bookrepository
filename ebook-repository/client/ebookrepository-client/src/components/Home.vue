@@ -19,9 +19,13 @@
       </div>
       <div class="search-by-category-container has-text-left">
         <b-field label="Browse by category" horizontal>
-          <b-select placeholder="Select a category" expanded>
-            <option value="SUBSCRIBER">Subscriber</option>
-            <option value="ADMIN">Admin</option>
+          <b-select placeholder="Select a category" v-model="selectedCategory" expanded>
+            <option 
+              v-for="category of categories"
+              :key="`category-search-${category.id}`"
+              :value="category.id">
+              {{category.name}}
+            </option>
         </b-select>
         </b-field>
       </div>
@@ -30,77 +34,107 @@
       <div 
         v-for="(searchHit, index) of searchHits"
         :key="`searchHit${index}`"
-        class="tile notification has-border">
-        <h1 class="is-size-5">{{searchHit.title}}</h1>
-        <p class="is-size-7 has-text-left text-container" v-html="getShortText(searchHit.text)"></p>
+        class="tile notification is-block has-text-left">
+        <div class="is-size-5 search-title">
+          {{searchHit.title}}
+          <a class="is-size-7 download-link">Download</a>
+        </div>
+        <div v-if="searchHit.text">
+          <p class="is-size-7 has-text-left text-container" v-html="getShortText(searchHit.text)"></p>
+        </div>
       </div>
+      <b-loading :is-full-page="false" :active.sync="isFetchInProgress"></b-loading>
     </div>
   </div>
 </template>
 
 <script>
-import { post } from '../fetch';
-import SearchPanel from './SearchPanel';
+import { post, get } from "../fetch";
+import SearchPanel from "./SearchPanel";
 
 export default {
   name: "Home",
   components: {
-    SearchPanel,
+    SearchPanel
   },
   data() {
     return {
-      radioButton:"",
+      radioButton: "",
       searchParams: {
         searchValue: "",
         fields: [],
         query: "",
-        operator: "",
+        operator: ""
       },
       searchHits: [],
+      isFetchInProgress: false,
+      categories: [],
+      selectedCategory: ""
     };
+  },
+  created() {
+    get("categories").then(({ data }) => {
+      this.categories = data;
+    });
   },
   methods: {
     search() {
-      post('books/search', { ...this.searchParams }).then(({ data }) => {
-        this.searchHits = data;
-      });
+      this.isFetchInProgress = true;
+      post("books/search", { ...this.searchParams })
+        .then(({ data }) => {
+          this.isFetchInProgress = false;
+          this.searchHits = data;
+        })
+        .catch(() => (this.isFetchInProgress = false));
     },
-    saveSearchParam({ param, value}) {
+    saveSearchParam({ param, value }) {
       this.searchParams[param] = value;
-      if (param === 'fields')
-        this.redefineSearchValue(value[value.length -1]);
+      if (param === "fields") this.redefineSearchValue(value[value.length - 1]);
     },
-    getShortText(fullText){
-      return `${fullText.substring(0,200)}...`;
+    getShortText(fullText) {
+      return `${fullText.substring(0, 200)}...`;
     },
     redefineSearchValue(fieldParam) {
-      this.searchParams.searchValue = `${fieldParam}:${this.searchParams.searchValue}`;
+      this.searchParams.searchValue = `${fieldParam}:${
+        this.searchParams.searchValue
+      }`;
     },
     applyFilters(filters) {
       this.formQuery(filters);
     },
     formQuery(filters) {
       const queryParts = filters.map((filter, index) => {
-        return `${operatorMappings[filter.operator]} ${filter.field}:${queryTypeMappings[filter.queryType](filter.searchValue)}`;
+        return `${operatorMappings[filter.operator]} ${
+          filter.field
+        }:${queryTypeMappings[filter.queryType](filter.searchValue)}`;
       });
 
       this.searchParams.searchValue = queryParts.join(" ");
+    }
+  },
+  watch: {
+    selectedCategory(val) {
+      this.isFetchInProgress = true;
+      get(`categories/${val}/books`).then(({data}) => {
+        this.isFetchInProgress = false;
+        this.searchHits = data;
+      }).catch(() => this.isFetchInProgress = false);
     }
   }
 };
 
 const operatorMappings = {
-  and: 'AND',
-  or: 'OR',
+  and: "AND",
+  or: "OR",
   none: "",
   not: "NOT"
-}
+};
 
 const queryTypeMappings = {
-  standard: (placeholder) => `${placeholder}`,
-  fuzzy: (placeholder) => `${placeholder}~`,
-  phrase: (placeholder) => `"${placeholder}"`,
-}
+  standard: placeholder => `${placeholder}`,
+  fuzzy: placeholder => `${placeholder}~`,
+  phrase: placeholder => `"${placeholder}"`
+};
 </script>
 
 <style>
@@ -111,6 +145,7 @@ const queryTypeMappings = {
 .tile {
   margin-left: 10px;
   margin-right: 10px;
+  display: block;
 }
 
 label {
@@ -127,5 +162,13 @@ label {
 
 .text-container {
   max-width: 60%;
+}
+
+.download-link {
+  color: #7957d5 !important;
+}
+
+.is-block {
+  display: block;
 }
 </style>

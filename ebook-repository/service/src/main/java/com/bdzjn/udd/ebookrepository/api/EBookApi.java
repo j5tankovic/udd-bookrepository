@@ -7,13 +7,18 @@ import com.bdzjn.udd.ebookrepository.dto.mapper.EBookMapper;
 import com.bdzjn.udd.ebookrepository.model.EBook;
 import com.bdzjn.udd.ebookrepository.service.EBookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -60,6 +65,17 @@ public class EBookApi {
     public ResponseEntity search(@RequestBody SearchDTO searchDTO) {
         List<SearchHitDTO> eBookDTOList = eBookService.search(searchDTO);
         return new ResponseEntity<>(eBookDTOList, HttpStatus.OK);
+    }
+
+    @GetMapping("/download/{fileName:.+}")
+    public ResponseEntity downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+        Optional<Resource> resource = eBookService.loadBookAsResource(fileName);
+        String contentType="application/pdf";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.get().getFilename() + "\"")
+                .body(resource);
     }
 
 }

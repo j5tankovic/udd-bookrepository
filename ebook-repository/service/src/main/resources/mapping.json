@@ -1,0 +1,27 @@
+{
+  "properties": {
+    "filename": {
+      "type": "keyword"
+    },
+    "text": {
+      "type": "text",
+      "analyzer": "serbian-analyzer"
+    },
+    "title": {
+      "type": "text",
+      "analyzer": "serbian-analyzer"
+    },
+    "keywords": {
+      "type": "text",
+      "analyzer": "serbian-analyzer"
+    },
+    "language": {
+      "type": "text",
+      "analyzer": "serbian-analyzer"
+    },
+    "author": {
+      "type": "text",
+      "analyzer": "serbian-analyzer"
+    }
+  }
+}

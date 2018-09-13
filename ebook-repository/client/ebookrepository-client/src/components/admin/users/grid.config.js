@@ -3,8 +3,6 @@ export default {
     {
       field: 'id',
       label: 'ID',
-      width: '40',
-      numeric: true
     },
     {
       field: 'firstname',
@@ -22,6 +20,10 @@ export default {
       field: 'username',
       label: 'Username',
     },
+    {
+      field: 'editAction',
+      label: 'Edit'
+    }
   ], 
   isPaginated: true,
   currentPage: 1,
