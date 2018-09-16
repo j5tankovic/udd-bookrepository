@@ -2,11 +2,15 @@ package com.bdzjn.udd.ebookrepository.dto;
 
 public class SearchHitDTO {
 
+    private long id;
+
     private String title;
 
     private String text;
 
     private String author;
+
+    private String category;
 
     public SearchHitDTO() {
     }
@@ -42,5 +46,25 @@ public class SearchHitDTO {
     public SearchHitDTO setAuthor(String author) {
         this.author = author;
         return this;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = Long.parseLong(id);
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

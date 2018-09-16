@@ -7,28 +7,40 @@
     <b-field grouped>
       <p class="control">
         <button class="button is-primary" @click="save">Ok</button>
-        <button class="button is-warning" @click="reset">Cancel</button>
+        <button class="button is-warning" @click="cancel">Cancel</button>
       </p>
     </b-field>
   </section>
 </template>
 
 <script>
+
+const mode = {
+  CREATE: "CREATE",
+  EDIT: "EDIT"
+};
+
 export default {
   name: "CategoryForm",
-  data () {
-    return {
-      category: {},
-    }
-  },
+  props: ['categoryForForm'],
   methods: {
     save () {
-      this.$emit('saveCategory', this.category)
-      this.reset()
+      this.$emit('saveCategory', { category: this.category, mode: this.mode });
+      //this.reset();
     },
-
-    reset () {
-      this.category = {};
+    cancel() {
+      this.$emit('cancel');
+    },
+    // reset () {
+    //   this.category = {};
+    // }
+  },
+  computed: {
+    category() {
+      return {...this.categoryForForm};
+    },
+    mode() {
+      return Object.keys(this.category).length !== 0 ? mode.EDIT : mode.CREATE;
     }
   }
 }

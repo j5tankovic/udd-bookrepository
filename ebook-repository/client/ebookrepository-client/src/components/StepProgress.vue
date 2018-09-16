@@ -5,32 +5,47 @@
         <div class="progressbar columns is-gapless">
           <div class="column" v-for="index in stepsRange" :key="index">
             <div>
-              <div v-bind:class="['progress-indicator', {'is-activated-step': isActivatedStep(index)}]">
+              <div :class="['progress-branch', 'branch-left', {'transparent-branch': index === 0}]"></div>
+              <div :class="['progress-indicator', {'is-activated-step': isActivatedStep(index)}]">
                 <i class="fas fa-spinner" v-if="isActivatedStep(index) && !isDoneStep(index)"></i>
                 <i class="fas fa-check" v-if="isDoneStep(index)"></i>
               </div>
+              <div :class="['progress-branch', 'branch-right', {'transparent-branch': index === total -1}]"></div>
               <div class="progress-step-label">{{stepLabels[index]}}</div>
             </div>
           </div>
         </div>
       </div>
       <div class="content">
-          <component v-bind:is="currentForm"></component>
+          <component v-bind:is="currentForm" v-bind="properties"></component>
       </div>
       <div class="buttons-container level">
           <div class="level-left">
             <button 
               class="button is-light"
               @click="preparePreviousStep" 
-              v-if="!isFirstStep">
+              v-if="!isFirstStep && !isLastStep">
               Back
+            </button>
+            <button 
+              class="button is-warning" 
+              @click="cancel"
+              v-if="isLastStep">
+              Cancel
             </button>
           </div>
           <div class="level-right">
             <button 
               class="button is-warning" 
-              @click="prepareNextStep">
+              @click="prepareNextStep"
+              v-if="!isLastStep">
               Next
+            </button>
+            <button 
+              class="button is-warning" 
+              @click="prepareNextStep"
+              v-if="isLastStep">
+              Confirm
             </button>
           </div>
         </div>
@@ -66,6 +81,13 @@ export default {
     },
     isDoneStep(idx) {
       return idx < this.currentStep;
+    },
+    cancel() {
+      this.currentConfig.onCancel();
+      this.currentStep = 0;
+    },
+    finish() {
+      this.currentConfig.onSubmit();
     }
   },
   computed: {
@@ -84,6 +106,12 @@ export default {
     isFirstStep() {
       return this.currentStep === 0;
     },
+    properties() {
+      return this.currentConfig.props;
+    },
+    isLastStep() {
+      return this.currentStep === this.total - 1;
+    }
   }
 };
 </script>
@@ -119,18 +147,43 @@ export default {
   font-weight: bold;
 }
 
-.progress-indicator:after {
+.progress-branch {
+  height: 3px;
+  background: #ced4da;
+  width: 46%;
+  vertical-align: middle;
+}
+
+.transparent-branch {
+  background: white;
+}
+
+.branch-right {
+  margin-left: 54%;
+  margin-top: -25px;
+}
+
+.branch-left {
+  margin-right: 55%;
+  margin-bottom: -18px;
+}
+
+.progress-step-label {
+  margin-top: 20px;
+}
+
+/* .progress-indicator:after {
   content: "";
   position: absolute;
-  width: 50%;
+  width: 66%;
   height: 3px;
   background: #ced4da;
   top: 15px;
-  right: 24%;
+  right: 16%;
   z-index: -1;
   align-self: right;
   z-index: 1;
-}
+} */
 
 .is-activated-step.progress-indicator:after {
   background: hsl(171, 100%, 41%);

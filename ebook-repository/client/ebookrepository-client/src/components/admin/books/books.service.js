@@ -1,30 +1,34 @@
 const BooksService = () => {
-  const filesToUpload = [];
-  const uploadedDocInfo = {};
-  const book = {};
+  let filesToUpload = [];
+  let uploadedDocInfo = {};
+  let book = {};
 
   const api = {
     getFielsToUpload() {
-      return this.filesToUpload;
+      return filesToUpload;
     },
     setFilesToUpload(files) {
-      this.filesToUpload = files;
+      filesToUpload = files;
     },
     getFileToUpload() {
-      return this.filesToUpload[0];
+      return filesToUpload[0];
     },
     getUploadedDocInfo() {
-      return this.uploadedDocInfo;
+      return uploadedDocInfo;
     },
     setUploadedDocInfo(info) {
-      this.uploadedDocInfo = info;
+      uploadedDocInfo = info;
     },
     getBook(){
-      return this.book;
+      return book;
     },
-    setBook(book){
-      this.book = book;
+    setBook(b){
+      book = b;
+    },
+    getFileName() {
+      return Object.keys(book).length ? book.filename : "";
     }
+
   }
 
   return api;

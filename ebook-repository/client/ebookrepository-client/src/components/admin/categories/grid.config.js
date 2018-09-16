@@ -10,6 +10,10 @@ export default {
       field: 'name',
       label: 'Name',
     },
+    {
+      field: 'editAction',
+      label: 'Edit'
+    }
   ], 
   isPaginated: true,
   currentPage: 1,

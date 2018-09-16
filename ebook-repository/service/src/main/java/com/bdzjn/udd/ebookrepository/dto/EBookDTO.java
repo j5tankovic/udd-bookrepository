@@ -1,5 +1,8 @@
 package com.bdzjn.udd.ebookrepository.dto;
 
+import com.bdzjn.udd.ebookrepository.model.Category;
+import com.bdzjn.udd.ebookrepository.model.Language;
+
 public class EBookDTO {
 
     private long id;
@@ -8,9 +11,9 @@ public class EBookDTO {
 
     private String filename;
 
-    private long languageId;
+    private Language language;
 
-    private long categoryId;
+    private Category category;
 
     private String author;
 
@@ -22,12 +25,12 @@ public class EBookDTO {
 
     private long cataloguerId;
 
-    public EBookDTO(long id, String title, String filename, long languageId, long categoryId, String author, String keywords, int publicationYear, String mimeType, long cataloguerId) {
+    public EBookDTO(long id, String title, String filename, Language language, Category category, String author, String keywords, int publicationYear, String mimeType, long cataloguerId) {
         this.id = id;
         this.title = title;
         this.filename = filename;
-        this.languageId = languageId;
-        this.categoryId = categoryId;
+        this.language = language;
+        this.category = category;
         this.author = author;
         this.keywords = keywords;
         this.publicationYear = publicationYear;
@@ -62,20 +65,20 @@ public class EBookDTO {
         this.filename = filename;
     }
 
-    public long getLanguageId() {
-        return languageId;
+    public Language getLanguage() {
+        return language;
     }
 
-    public void setLanguageId(long languageId) {
-        this.languageId = languageId;
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
-    public long getCategoryId() {
-        return categoryId;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategoryId(long categoryId) {
-        this.categoryId = categoryId;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public String getAuthor() {

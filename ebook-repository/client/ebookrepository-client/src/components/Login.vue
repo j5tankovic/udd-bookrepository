@@ -50,6 +50,10 @@ export default {
       .then(response => {
         localStorage.userId = response.data.id;
         localStorage.userType = response.data.type;
+        localStorage.userInfo = `${response.data.firstname} ${response.data.lastname}`;
+        localStorage.subscribedCategory = response.data.subscribedTo.id;
+
+        eventHub.$emit('localStorageChanged');
         this.$router.push({ name: RouteNames.HOME })
       })
     }

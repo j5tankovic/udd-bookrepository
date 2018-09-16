@@ -7,7 +7,7 @@
       <p class="has-text-weight-semibold">Name:</p>
       </div>
       <div class="column">
-      <p class="has-text-weight-normal">John</p>
+      <p class="has-text-weight-normal">{{user.firstname}}</p>
       </div>
   </div>
   <div class="columns">
@@ -15,7 +15,7 @@
       <p class="has-text-weight-semibold">Surname:</p>
       </div>
       <div class="column">
-      <p class="has-text-weight-normal">Doe</p>
+      <p class="has-text-weight-normal">{{user.lastname}}</p>
       </div>
   </div>
   <div class="columns">
@@ -23,7 +23,7 @@
       <p class="has-text-weight-semibold">Username:</p>
       </div>
       <div class="column">
-      <p class="has-text-weight-normal">johndoe</p>
+      <p class="has-text-weight-normal">{{user.username}}</p>
       </div>
   </div>
   <p class="title is-4">Change password</p>
@@ -83,15 +83,21 @@
 </template>
 
 <script>
-import { post } from "../../fetch";
+import { get, post } from "../../fetch";
 
 export default {
   name: "BasicInfo",
   data() {
     return {
-      userId: this.$route.params.id,
-      passwordChangeModel: {}
+      passwordChangeModel: {},
+      user: {}
     };
+  },
+  created() {
+    let userId = this.$route.params.id;
+    get(`users/${userId}`).then(({ data }) => {
+      this.user = data;
+    });
   },
   methods: {
     changePassword() {
@@ -100,13 +106,16 @@ export default {
       if (isChangeOk) {
         post(`users/${this.userId}/change-password`, {
           newPassword: this.passwordChangeModel.newPassword
-        }).then(response => console.log(respone.data))
+        }).then(response => console.log(respone.data));
       }
-		},
-		
-		verifyPassword() {
-			return this.passwordChangeModel.newPassword === this.passwordChangeModel.repeatPassword;
-		}
+    },
+
+    verifyPassword() {
+      return (
+        this.passwordChangeModel.newPassword ===
+        this.passwordChangeModel.repeatPassword
+      );
+    }
   }
 };
 </script>

@@ -14,8 +14,11 @@ Vue.use(Buefy, {
 
 setupInterceptor();
 
+const eventHub = new Vue();
+window.eventHub = eventHub;
+
 /* eslint-disable no-new */
-new Vue({
+const vm = new Vue({
   el: '#app',
   router,
   components: { App },

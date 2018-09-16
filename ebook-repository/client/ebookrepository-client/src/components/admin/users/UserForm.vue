@@ -16,8 +16,20 @@
      <b-field
         label="Type">
         <b-select placeholder="Select a type" expanded v-model="user.type">
-            <option value="SUBSCRIBER">Subscriber</option>
-            <option value="ADMIN">Admin</option>
+            <option
+              v-for="type of types"
+              :key="type"
+              :value="type">{{type}}</option>
+        </b-select>
+      </b-field>
+      <b-field
+        label="Subscribed category">
+        <b-select placeholder="Select category for user" expanded v-model="user.subscribedTo">
+            <option>All</option>
+            <option
+              v-for="category of categories"
+              :key="category.id"
+              :value="category">{{category.name}}</option>
         </b-select>
       </b-field>
       <b-field grouped>
@@ -30,46 +42,50 @@
 </template>
 
 <script>
-
+import { get } from '../../../fetch';
 const mode = {
   CREATE: "CREATE",
   EDIT: "EDIT"
-}
+};
 
 export default {
   name: "UserForm",
   props: ["userForForm"],
-  data () {
+  data() {
     return {
-     // user: {...this.userForForm},
-    }
+      categories: [],
+      types: ['SUBSCRIBER', 'ADMIN']
+    };
+  },
+  created() {
+    get('categories').then(({data}) => {
+      this.categories = data;
+    })
   },
   methods: {
     save() {
-      this.$emit('saveUser', { user: this.user, mode: this.mode});
+      this.$emit("saveUser", { user: this.user, formMode: this.formMode });
       this.reset();
     },
 
     reset() {
-      this.$emit('cancel');
-      this.user = {}
+      this.$emit("cancel");
+      this.user = {};
     }
   },
   computed: {
-    mode() {
-      return Object.keys(this.user).length !== 0 ? mode.EDIT : mode.CREATE;
+    formMode() {
+      return this.user.id ? mode.EDIT : mode.CREATE;
     },
     user: {
       get() {
-        return {...this.userForForm};
+        return { ...this.userForForm };
       },
-      set(newValue){
-      }
+      set(newValue) {}
     }
   }
-}
+};
 </script>
 
 <style>
-
 </style>

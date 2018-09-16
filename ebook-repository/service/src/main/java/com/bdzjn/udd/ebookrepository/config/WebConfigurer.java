@@ -13,7 +13,11 @@ public class WebConfigurer implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(requestInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/api/users/login");
+                .excludePathPatterns(
+                        "/api/users/login",
+                        "/api/categories",
+                        "/api/categories/**/books",
+                        "/api/books/search");
     }
 
     @Bean

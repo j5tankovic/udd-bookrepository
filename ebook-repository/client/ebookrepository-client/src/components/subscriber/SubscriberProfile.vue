@@ -21,17 +21,11 @@
         <div class="column">
           <div class="tabs is-centered">
             <ul>
-              <li :class="isActive('profile')"><a @click="option='profile'">Profile</a></li>
-              <li :class="isActive('users')"><a @click="option='users'">Users</a></li>
-              <li :class="isActive('books')"><a @click="option='books'">Books</a></li>
-              <li :class="isActive('categories')"><a @click="option='categories'">Categories</a></li>
+              <li class="is-active"><a @click="option='profile'">Profile</a></li>
             </ul>
           </div>
           <div class="box has-text-left">
             <basicInfo v-if="option==='profile'"></basicInfo>
-            <users v-if="option==='users'"></users>
-            <books v-if="option==='books'"></books>
-            <categories v-if="option==='categories'"></categories>
           </div>
         </div>
     </div>
@@ -39,30 +33,17 @@
 </template>
 
 <script>
-import BasicInfo from './BasicInfo';
-import Users from './users/Users';
-import Books from './books/Books';
-import Categories from './categories/Categories';
+import BasicInfo from '../admin/BasicInfo';
 export default {
-  name: 'AdminProfile',
+  name: 'SubscriberProfile',
   data () {
     return {
       option: 'profile',
     }
   },
   components: {
-    basicInfo: BasicInfo,
-    users: Users,
-    books: Books,
-    categories: Categories,
+    basicInfo: BasicInfo
   },
-  methods: {
-    isActive(item) {
-      return {
-        'is-active': this.option == item
-      }
-    }
-  }
 }
 </script>
 

@@ -17,50 +17,52 @@
       <b-input v-model="book.mimeType" value="application/pdf"></b-input>
     </b-field>
     <b-field label="Category">
-      <b-select placeholder="Select a category" expanded v-model="book.categoryId">
+      <b-select placeholder="Select a category" expanded v-model="book.category">
         <option 
               v-for="category of categories" 
               :key="category.id"
-              :value="category.id">{{ category.name }} </option>
+              :value="category">{{ category.name }}</option>
       </b-select>
     </b-field>
     <b-field label="Language">
-      <b-select placeholder="Select a language" expanded v-model="book.languageId">
+      <b-select placeholder="Select a language" expanded v-model="book.language">
          <option 
               v-for="language of languages" 
               :key="language.id"
-              :value="language.id">{{ language.name }} </option>
+              :value="language">{{ language.name }} </option>
       </b-select>
     </b-field>
   </section>
 </template>
 
 <script>
-import booksService from './books.service';
-import { get } from '../../../fetch';
+import booksService from "./books.service";
+import { get } from "../../../fetch";
 
 export default {
-  name: 'BookForm',
+  name: "BookForm",
   data() {
     return {
-      book: {},
+      book: {
+        category: {},
+        language: {},
+      },
       categories: [],
-      languages: [],
+      languages: []
     };
   },
   created() {
     this.book = booksService.getUploadedDocInfo();
-    get('categories').then(({data}) => this.categories = data);
-    get('languages').then(({data}) => this.languages = data);
+    get("categories").then(({ data }) => (this.categories = data));
+    get("languages").then(({ data }) => (this.languages = data));
   },
   watch: {
     book(val) {
       booksService.setBook(val);
     }
   }
-}
+};
 </script>
 
 <style>
-
 </style>

@@ -16,6 +16,7 @@ public class CategoryMapper {
     public static Category toModel(CategoryDTO categoryDTO) {
         Category category = new Category();
         category.setName(categoryDTO.getName());
+        category.setId(categoryDTO.getId());
 
         return category;
     }

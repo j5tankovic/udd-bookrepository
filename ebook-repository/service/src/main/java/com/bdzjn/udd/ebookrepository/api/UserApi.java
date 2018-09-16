@@ -33,10 +33,8 @@ public class UserApi {
         Optional<User> user = userService.login(loginDTO.getUsername(), loginDTO.getPassword());
 
         if (user.isPresent()) {
-            LoginResponseDTO loginResponseDTO =
-                    new LoginResponseDTO(user.get().getId(), user.get().getType());
-
-            return new ResponseEntity<>(loginResponseDTO, HttpStatus.OK);
+            UserDTO userDTO = UserMapper.toDTO(user.get());
+            return new ResponseEntity<>(userDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

@@ -73,8 +73,8 @@ export default {
     get("users").then(({ data }) => (this.users = data));
   },
   methods: {
-    save({ user, mode }) {
-      if (mode === mode.CREATE) {
+    save({ user, formMode }) {
+      if (formMode === mode.CREATE) {
         post("users", user).then(({ data }) => {
           this.selectedUserId = -1;
           this.users.push(data);

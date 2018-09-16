@@ -69,8 +69,10 @@ public class EBookService {
     public void save(EBook ebook) {
         IREBook ireBook = pdfDocumentHandler
                 .getIREBook(ebook, dirLocation.resolve(ebook.getFilename()));
+        EBook saved = eBookRepository.save(ebook);
+
+        ireBook.setId(String.valueOf(saved.getId()));
         irEbookRepository.save(ireBook);
-        eBookRepository.save(ebook);
     }
 
     public File storeFile(MultipartFile file) {
@@ -159,9 +161,10 @@ public class EBookService {
                 .collect(Collectors.joining());
     }
 
-    public Optional<Resource> loadBookAsResource(String fileName) {
+    public Optional<Resource> loadBookAsResource(long id) {
         try {
-            Path filePath = this.dirLocation.resolve(fileName).normalize();
+            EBook ebook = eBookRepository.findById(id).get();
+            Path filePath = this.dirLocation.resolve(ebook.getFilename()).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if(resource.exists()) {
                 return Optional.of(resource);
@@ -171,5 +174,13 @@ public class EBookService {
         }
 
         return Optional.empty();
+    }
+
+    public void update(EBook eBook) {
+        this.save(eBook);
+    }
+
+    public void deleteFileFromStorage(String filename) throws IOException {
+        Files.deleteIfExists(dirLocation.resolve(filename));
     }
 }

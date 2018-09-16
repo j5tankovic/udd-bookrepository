@@ -11,7 +11,9 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 public class IREBook {
 
     @Id
-    @Field(type = FieldType.Keyword, index = false, store = true)
+    @Field(type=FieldType.Keyword)
+    private String id;
+
     private String filename;
 
     private String text;
@@ -23,6 +25,16 @@ public class IREBook {
     private String author;
 
     private String language;
+
+    private String category;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getFilename() {
         return filename;
@@ -70,5 +82,13 @@ public class IREBook {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

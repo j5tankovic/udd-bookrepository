@@ -14,22 +14,17 @@ public class EBookMapper {
     @Autowired
     UserService userService;
 
-    @Autowired
-    CategoryService categoryService;
-
-    @Autowired
-    LanguageService languageService;
-
     public EBook toEBook(EBookDTO eBookDTO) {
         EBook ebook = new EBook();
+        ebook.setId(eBookDTO.getId());
         ebook.setTitle(eBookDTO.getTitle());
         ebook.setCataloguer(userService.findOne(eBookDTO.getCataloguerId()).get());
         ebook.setPublicationYear(eBookDTO.getPublicationYear());
         ebook.setFilename(eBookDTO.getFilename());
         ebook.setKeywords(eBookDTO.getKeywords());
         ebook.setAuthor(eBookDTO.getAuthor());
-        ebook.setCategory(categoryService.findById(eBookDTO.getCategoryId()));
-        ebook.setLanguage(languageService.findById(eBookDTO.getLanguageId()));
+        ebook.setCategory(eBookDTO.getCategory());
+        ebook.setLanguage(eBookDTO.getLanguage());
         ebook.setMimeType(eBookDTO.getMimeType());
 
         return ebook;
@@ -43,6 +38,9 @@ public class EBookMapper {
         eBookDTO.setPublicationYear(eBook.getPublicationYear());
         eBookDTO.setId(eBook.getId());
         eBookDTO.setMimeType(eBook.getMimeType());
+        eBookDTO.setFilename(eBook.getFilename());
+        eBookDTO.setCategory(eBook.getCategory());
+        eBookDTO.setLanguage(eBook.getLanguage());
 
         return eBookDTO;
     }

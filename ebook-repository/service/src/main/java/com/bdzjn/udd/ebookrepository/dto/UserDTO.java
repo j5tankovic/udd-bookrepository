@@ -83,8 +83,11 @@ public class UserDTO {
         return subscribedTo;
     }
 
-    public UserDTO setSubscribedTo(Category subscribedTo) {
+    public void setSubscribedTo(Category subscribedTo) {
+        if (subscribedTo == null) {
+            subscribedTo = new Category();
+            subscribedTo.setId(-1);
+        }
         this.subscribedTo = subscribedTo;
-        return this;
     }
 }

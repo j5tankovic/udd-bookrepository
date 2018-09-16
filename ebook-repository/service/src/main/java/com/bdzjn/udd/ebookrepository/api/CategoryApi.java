@@ -48,6 +48,13 @@ public class CategoryApi {
         return new ResponseEntity<>(category, HttpStatus.OK);
     }
 
+    @PutMapping("")
+    public ResponseEntity updateCategory(@RequestBody CategoryDTO categoryDTO) {
+        Category category = CategoryMapper.toModel(categoryDTO);
+        category = categoryService.save(category);
+        return new ResponseEntity<>(category, HttpStatus.OK);
+    }
+
     @GetMapping("{id}/books")
     public ResponseEntity getBooks(@PathVariable long id) {
         List<EBook> eBookList = categoryService.getBooks(id);

@@ -37,7 +37,7 @@
         class="tile notification is-block has-text-left">
         <div class="is-size-5 search-title">
           {{searchHit.title}}
-          <a class="is-size-7 download-link">Download</a>
+          <a v-if="canDownload && isSubscribedToCategory(searchHit.category)" class="is-size-7 download-link" @click="download(searchHit.id)">Download</a>
         </div>
         <div v-if="searchHit.text">
           <p class="is-size-7 has-text-left text-container" v-html="getShortText(searchHit.text)"></p>
@@ -45,6 +45,7 @@
       </div>
       <b-loading :is-full-page="false" :active.sync="isFetchInProgress"></b-loading>
     </div>
+    <a ref="downloadLink"></a>
   </div>
 </template>
 
@@ -69,7 +70,7 @@ export default {
       searchHits: [],
       isFetchInProgress: false,
       categories: [],
-      selectedCategory: ""
+      selectedCategory: "",
     };
   },
   created() {
@@ -110,16 +111,47 @@ export default {
       });
 
       this.searchParams.searchValue = queryParts.join(" ");
+    },
+    download(id) {
+      get(`books/${id}/download`, { responseType: 'blob'}).then(({headers, data}) => {
+        const downloadFileName = headers["content-disposition"].split("=")[1].replace(/"/g, '');
+        const downloadUrl = window.URL.createObjectURL(new Blob([data]));
+        this.$refs.downloadLink.href = downloadUrl;
+        this.$refs.downloadLink.download = decodeURIComponent(downloadFileName);
+        this.$refs.downloadLink.click();
+        this.$toast.open({
+          message: "Book downloaded!",
+          type: "is-success",
+          duration: 5000,
+        });
+      });
+    },
+    isSubscribedToCategory(category) {
+      let subscribedCategory = localStorage.getItem("subscribedCategory");
+      if (subscribedCategory == -1) {
+        return true;
+      } else if (subscribedCategory === category) {
+        return true;
+      }
+      return false;
     }
   },
   watch: {
     selectedCategory(val) {
       this.isFetchInProgress = true;
-      get(`categories/${val}/books`).then(({data}) => {
-        this.isFetchInProgress = false;
-        this.searchHits = data;
-      }).catch(() => this.isFetchInProgress = false);
+      get(`categories/${val}/books`)
+        .then(({ data }) => {
+          this.isFetchInProgress = false;
+          this.searchHits = data;
+        })
+        .catch(() => (this.isFetchInProgress = false));
     }
+  },
+  computed: {
+    canDownload() {
+      const userType = localStorage.getItem("userType");
+      return userType === "ADMIN" || userType === "SUBSCRIBER"
+    },
   }
 };
 

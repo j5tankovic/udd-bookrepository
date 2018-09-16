@@ -13,6 +13,7 @@ public class UserMapper {
         userDTO.setLastname(user.getLastname());
         userDTO.setPassword(user.getPassword());
         userDTO.setType(user.getType());
+        userDTO.setSubscribedTo(user.getSubscribedCategory());
 
         return userDTO;
     }

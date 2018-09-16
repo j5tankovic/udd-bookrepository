@@ -15,10 +15,6 @@ export default {
       label: 'Author',
     },
     {
-      field: 'keywords',
-      label: 'Keywords',
-    },
-    {
       field: 'publicationYear',
       label: 'Publication Year',
     },
@@ -27,10 +23,10 @@ export default {
       label: 'Category',
     },
     {
-      field: 'cataloguer',
-      label: 'Cataloguer',
-    },
-  ], 
+      field: 'editAction',
+      label: 'Edit'
+    }
+  ],
   isPaginated: true,
   currentPage: 1,
   perPage: 10,

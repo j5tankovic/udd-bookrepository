@@ -21,6 +21,7 @@ public class PdfDocumentHandler extends DocumentHandler {
 
         ireBook.setFilename(eBook.getFilename());
         ireBook.setLanguage(eBook.getLanguage().getName());
+        ireBook.setCategory(String.valueOf(eBook.getCategory().getId()));
         ireBook.setTitle(eBook.getTitle());
 
         File bookFile = filepath.toFile();

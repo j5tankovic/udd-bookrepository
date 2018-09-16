@@ -22,6 +22,9 @@
     "author": {
       "type": "text",
       "analyzer": "serbian-analyzer"
+    },
+    "category": {
+      "type": "keyword"
     }
   }
 }
